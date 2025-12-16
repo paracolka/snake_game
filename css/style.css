@@ -1,0 +1,27 @@
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#1a2980,#26d0ce);
+  color: white;
+  text-align: center;
+}
+#gameBoard {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  max-width: 500px;
+  margin: 20px auto;
+}
+.cell {
+  border: 1px solid #ccc;
+  background: #f0e6d2;
+  height: 50px;
+  position: relative;
+}
+.player {
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 50%;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
