@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игра - Змейки и Лестницы</title>
+    <link rel="stylesheet" href="styles/game.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Быстрая загрузка основного контента */
+        #game-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-loading">
+        <div class="loading-spinner"></div>
+        <p>Загрузка игры...</p>
+    </div>
+    
+    <div id="game-container" style="display: none;">
+        <!-- Верхняя панель -->
+        <div class="top-bar">
+            <div class="user-info">
+                <div class="user-display">
+                    <i class="fas fa-user"></i>
+                    <span id="username-display">Гость</span>
+                </div>
+                <div class="game-stats">
+                    <span class="stat-item">
+                        <i class="fas fa-dice"></i> <span id="roll-count">0</span>
+                    </span>
+                    <span class="stat-item">
+                        <i class="fas fa-running"></i> <span id="move-count">0</span>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="game-title">
+                <h1><i class="fas fa-gamepad"></i> Змейки и Лестницы</h1>
+            </div>
+            
+            <div class="game-controls">
+                <button id="save-game-btn" class="btn-control" title="Сохранить игру">
+                    <i class="fas fa-save"></i>
+                </button>
+                <button id="logout-btn" class="btn-control btn-logout" title="Выйти">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Основное содержимое -->
+        <div class="main-content">
+            <!-- Левая панель - игровое поле -->
+            <div class="left-panel">
+                <div class="game-board-container">
+                    <div class="board-header">
+                        <h2><i class="fas fa-chess-board"></i> Игровое поле</h2>
+                        <div class="current-position">
+                            <span>Текущая позиция:</span>
+                            <span class="position-value" id="position-value">1</span>
+                        </div>
+                    </div>
+                    
+                    <div class="game-board" id="game-board">
+                        <!-- Игровое поле генерируется через JS -->
+                    </div>
+                    
+                    <div class="player-piece" id="player-piece">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Правая панель - управление и комментарии -->
+            <div class="right-panel">
+                <!-- Панель управления -->
+                <div class="control-panel">
+                    <div class="dice-section">
+                        <div class="dice" id="dice-display">
+                            <div class="dice-inner">?</div>
+                        </div>
+                        <button id="roll-dice-btn" class="btn-action">
+                            <i class="fas fa-dice"></i> БРОСИТЬ КУБИК
+                        </button>
+                    </div>
+                    
+                    <div class="move-section">
+                        <button id="move-btn" class="btn-action btn-move" disabled>
+                            <i class="fas fa-arrow-right"></i> ПЕРЕМЕСТИТЬ ФИШКУ
+                        </button>
+                        <div class="dice-result">
+                            Выпало: <span id="dice-result">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="reset-game-btn" class="btn-secondary">
+                            <i class="fas fa-redo"></i> Новая игра
+                        </button>
+                        <button id="help-btn" class="btn-secondary">
+                            <i class="fas fa-question-circle"></i> Помощь
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Панель комментариев -->
+                <div class="comments-panel">
+                    <div class="comments-header">
+                        <h3><i class="fas fa-comments"></i> Комментарии</h3>
+                        <button id="clear-comments-btn" class="btn-small" title="Очистить все комментарии">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="comments-list" id="comments-list">
+                        <div class="no-comments">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Нажмите <i class="fas fa-plus"></i> на клетке, чтобы добавить комментарий</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно комментария -->
+        <div id="comment-modal" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3><i class="fas fa-comment"></i> Комментарий к клетке <span id="modal-cell-number"></span></h3>
+                    <button class="modal-close" id="comment-modal-close">&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="form-group">
+                        <textarea id="comment-text" placeholder="Введите ваш комментарий здесь..." rows="4"></textarea>
+                    </div>
+                    <div class="modal-info">
+                        <i class="fas fa-info-circle"></i>
+                        <small>Комментарий будет сохранен локально в вашем браузере</small>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button id="delete-comment-btn" class="btn-danger">
+                        <i class="fas fa-trash"></i> Удалить
+                    </button>
+                    <button id="cancel-comment-btn" class="btn-secondary">Отмена</button>
+                    <button id="save-comment-btn" class="btn-primary">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Модальное окно помощи -->
+        <div id="help-modal" class="modal-overlay">
+            <div class="modal modal-help">
+                <div class="modal-header">
+                    <h3><i class="fas fa-question-circle"></i> Как играть</h3>
+                    <button class="modal-close" id="help-modal-close">&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="help-section">
+                        <h4><i class="fas fa-dice"></i> Основные правила:</h4>
+                        <ol>
+                            <li>Нажмите "БРОСИТЬ КУБИК" - выпадет случайное число от 1 до 6</li>
+                            <li>Нажмите "ПЕРЕМЕСТИТЬ ФИШКУ", чтобы передвинуть фишку на выпавшее количество клеток</li>
+                            <li>Вы также можете кликнуть на любую клетку, чтобы переместить фишку напрямую</li>
+                            <li>Цель игры - достигнуть клетки 100!</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h4><i class="fas fa-comment"></i> Комментарии:</h4>
+                        <ul>
+                            <li>Нажмите <i class="fas fa-plus"></i> на любой клетке, чтобы добавить комментарий</li>
+                            <li>Комментарии сохраняются локально в вашем браузере</li>
+                            <li>Клетки с комментариями подсвечиваются желтым цветом</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h4><i class="fas fa-save"></i> Сохранение:</h4>
+                        <ul>
+                            <li>Прогресс автоматически сохраняется при каждом действии</li>
+                            <li>Данные хранятся в localStorage вашего браузера</li>
+                            <li>Для разных пользователей - разные сохранения</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button id="close-help-btn" class="btn-primary">Понятно</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Футер -->
+        <footer class="game-footer">
+            <p>
+                <i class="fas fa-code"></i> Игра "Змейки и Лестницы" | 
+                <i class="fas fa-laptop-code"></i> GitHub Pages версия | 
+                <i class="fas fa-user-shield"></i> Все данные хранятся локально
+            </p>
+        </footer>
+    </div>
+    
+    <!-- Скрипты -->
+    <script src="js/utils.js"></script>
+    <script src="js/offline-storage.js"></script>
+    <script src="js/game.js"></script>
+    
+    <script>
+        // Быстрая инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                document.getElementById('game-loading').style.display = 'none';
+                document.getElementById('game-container').style.display = 'block';
+            }, 500);
+        });
+    </script>
+</body>
+</html>

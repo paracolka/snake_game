@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в игру - Змейки и Лестницы</title>
+    <link rel="stylesheet" href="styles/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1><i class="fas fa-gamepad"></i> Змейки и Лестницы</h1>
+            <p>Авторизуйтесь для сохранения прогресса</p>
+        </div>
+        
+        <div class="auth-tabs">
+            <button class="tab-btn active" data-tab="login">
+                <i class="fas fa-sign-in-alt"></i> Вход
+            </button>
+            <button class="tab-btn" data-tab="register">
+                <i class="fas fa-user-plus"></i> Регистрация
+            </button>
+        </div>
+        
+        <!-- Форма входа -->
+        <div id="login-form" class="auth-form active">
+            <h2><i class="fas fa-key"></i> Вход в аккаунт</h2>
+            
+            <div class="form-group">
+                <label for="login-username"><i class="fas fa-user"></i> Имя пользователя</label>
+                <input type="text" id="login-username" placeholder="Введите имя пользователя" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="login-password"><i class="fas fa-lock"></i> Пароль</label>
+                <input type="password" id="login-password" placeholder="Введите пароль" required>
+            </div>
+            
+            <button id="login-btn" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Войти
+            </button>
+            
+            <div class="guest-option">
+                <hr>
+                <p>Или войдите как гость (прогресс сохраняется только в этом браузере):</p>
+                <button id="guest-btn" class="btn btn-secondary">
+                    <i class="fas fa-user-circle"></i> Войти как гость
+                </button>
+            </div>
+            
+            <div id="login-message" class="message"></div>
+        </div>
+        
+        <!-- Форма регистрации -->
+        <div id="register-form" class="auth-form">
+            <h2><i class="fas fa-user-plus"></i> Создание аккаунта</h2>
+            
+            <div class="form-group">
+                <label for="register-username"><i class="fas fa-user"></i> Имя пользователя</label>
+                <input type="text" id="register-username" placeholder="Придумайте имя пользователя" required>
+                <small>От 3 до 20 символов (буквы, цифры, _)</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="register-password"><i class="fas fa-lock"></i> Пароль</label>
+                <input type="password" id="register-password" placeholder="Придумайте пароль" required>
+                <small>Не менее 6 символов</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="register-password-confirm"><i class="fas fa-lock"></i> Подтвердите пароль</label>
+                <input type="password" id="register-password-confirm" placeholder="Повторите пароль" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="register-email"><i class="fas fa-envelope"></i> Email (необязательно)</label>
+                <input type="email" id="register-email" placeholder="Ваш email для восстановления">
+            </div>
+            
+            <button id="register-btn" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Зарегистрироваться
+            </button>
+            
+            <div id="register-message" class="message"></div>
+        </div>
+        
+        <div class="auth-footer">
+            <p><i class="fas fa-info-circle"></i> Все данные хранятся локально в вашем браузере</p>
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Назад на главную
+            </a>
+        </div>
+    </div>
+    
+    <script src="js/auth.js"></script>
+    <script src="js/offline-storage.js"></script>
+</body>
+</html>
