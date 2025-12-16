@@ -4,7 +4,7 @@ body {
   color: white;
   text-align: center;
 }
-#gameBoard {
+.gameBoard {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   max-width: 500px;
